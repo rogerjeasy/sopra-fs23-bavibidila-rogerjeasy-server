@@ -117,30 +117,30 @@ public class UserControllerTest {
   }
 
   @Test
-    public void login_user() throws Exception {
-        // given
-        User user = new User();
-        user.setId(1L);
-        user.setPassword("password");
-        user.setUsername("testUsername");
-        user.setToken("1");
-        user.setStatus(UserStatus.ONLINE);
+  public void login_user() throws Exception {
+      // given
+      User user = new User();
+      user.setId(1L);
+      user.setPassword("password");
+      user.setUsername("testUsername");
+      user.setToken("1");
+      user.setStatus(UserStatus.ONLINE);
 
-        UserPostDTO userPostDTO = new UserPostDTO();
-        userPostDTO.setUsername("testUsername");
+      UserPostDTO userPostDTO = new UserPostDTO();
+      userPostDTO.setUsername("testUsername");
 
-        given(userService.createUser(Mockito.any())).willReturn(user);
+      given(userService.createUser(Mockito.any())).willReturn(user);
 
-        // when/then -> do the request + validate the result
-        MockHttpServletRequestBuilder postRequest = post("/users/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(userPostDTO));
+      // when/then -> do the request + validate the result
+      MockHttpServletRequestBuilder postRequest = post("/users/login")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(asJsonString(userPostDTO));
 
-        // then
-        mockMvc.perform(postRequest)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value("testUsername"));
-    }
+      // then
+      mockMvc.perform(postRequest)
+              .andExpect(status().isOk())
+              .andExpect(jsonPath("$.username").value("testUsername"));
+  }
 
   @Test
   public void get_single_user() throws Exception {
