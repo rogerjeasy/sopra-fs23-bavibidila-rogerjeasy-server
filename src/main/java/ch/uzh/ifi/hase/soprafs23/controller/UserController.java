@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
@@ -22,9 +24,11 @@ import java.util.List;
 public class UserController {
 
   private final UserService userService;
+    private final UserRepository userRepository;
 
-  UserController(UserService userService) {
+  UserController(UserService userService, UserRepository userRepository) {
     this.userService = userService;
+      this.userRepository = userRepository;
   }
 
   @GetMapping("/users")
@@ -54,4 +58,51 @@ public class UserController {
     // convert internal representation of user back to API
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
+
+    @PostMapping("/users/login")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO loginUser(@RequestBody UserPostDTO userPostDTO) {
+
+        List<User> users = userService.getUsers();
+
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+
+        User u = new User();
+        for(int i=0;i<users.size();i++)
+        {
+            if(users.get(i).equals(userInput))
+            {
+                u = users.get(i);
+            }
+        }
+        u.setStatus(UserStatus.ONLINE);
+        userRepository.save(u);
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(u);
+    }
+
+    @GetMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public User findUser(@PathVariable int id)
+    {
+        User user = userService.getUserById(id);
+        return user;
+    }
+
+    @PutMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public User updateUser(@PathVariable int id, @RequestBody User user) throws Exception {
+        User updatedUser = userService.updateUser(id, user);
+        return updatedUser;
+    }
+
+    @PostMapping("/users/logout/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void logoutUser(@PathVariable int id)
+    {
+        userService.logoutUser(id);
+    }
 }

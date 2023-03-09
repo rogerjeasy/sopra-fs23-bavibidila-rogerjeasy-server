@@ -1,17 +1,24 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
-public class UserPostDTO {
+import java.sql.Date;
 
-  private String name;
+public class UserPostDTO {
 
   private String username;
 
-  public String getName() {
-    return name;
+  private boolean isLoggedin;
+
+  private String password;
+
+  private Date birthday;
+
+
+  public String getPassword() {
+    return password;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public String getUsername() {
@@ -21,4 +28,12 @@ public class UserPostDTO {
   public void setUsername(String username) {
     this.username = username;
   }
+
+  public boolean getIsLoggedIn() { return isLoggedin; }
+
+    public void setIsLoggedIn(boolean isLoggedIn) {this.isLoggedin = isLoggedin;}
+
+    public Date getBirthDay() {return birthday;}
+
+    public void setBirthDay(Date birthday){this.birthday = birthday;}
 }
